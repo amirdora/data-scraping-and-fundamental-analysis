@@ -1,17 +1,15 @@
-import json
-
 import scrapy
 from scrapy.selector import Selector
+from scrapy.linkextractors import LinkExtractor
+from scrapy.spiders import CrawlSpider, Rule
 
-data2 = []
 
-
-class StockCrawler(scrapy.Spider):  # either scrapy.Spider or SrawlSpider
+class Myspider2Spider(scrapy.Spider):  # either scrapy.Spider or SrawlSpider
 
     name = 'mySpider2'
 
     allowed_domains = ['macrotrends.net']
-    # start_urls = ['https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/pe-ratio',
+    # start_urls = ['https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/pe-ratio', 
     # 'https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/price-sales',
     # 'https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/price-book',
     # 'https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/price-fcf']
@@ -40,20 +38,22 @@ class StockCrawler(scrapy.Spider):  # either scrapy.Spider or SrawlSpider
 
     def process_general(self, response, indicator):
         selector = Selector(text=response.body)
-        # init dict
-        debate_dict = self.initializeDictionary()
-        ticker = (response.url).rsplit('/', 3)[-3]
         out = response.xpath('//*[@id="style-1"]/div[1]/table/tbody')
         for row in out.css('tr'):
-            year = row.xpath('td[1]/text()').get()
-            amount = row.xpath('td[2]/text()').get()
-            debate_dict['Ticker'] = ticker
-            debate_dict["Revenue"].append({
-                'year': year,
-                'amount': amount,
-            })
-            with open('data.json', 'w') as f:
-                json.dump(debate_dict, f)
+            r = []
+            for td in row.css('td'):
+                val = ''.join(td.xpath('.//text()').extract())
+                if val == '':
+                    val = '?'
+                r.append(val)
+            r.insert(0, (response.url).rsplit('/', 3)[-3])
+            r.insert(0, (response.url).rsplit('/', 3)[-1])
+            r[-1] = r[-1].replace('$', '')
+            r[-1] = r[-1].replace(',', '')
+            r = ','.join(r)
+            r += "\n"
+            with open('dump.txt', 'a') as f:
+                f.writelines(r)
 
     def process_column(self, response, col_id, indicator):
         selector = Selector(text=response.body)
@@ -78,8 +78,6 @@ class StockCrawler(scrapy.Spider):  # either scrapy.Spider or SrawlSpider
                 f.writelines(r)
 
     def parse(self, response):
-        # initialize dictionary
-
         print(response.url)
         indicator = (response.url).rsplit('/', 3)[-1]
         if indicator == 'pe-ratio':
@@ -117,6 +115,7 @@ class StockCrawler(scrapy.Spider):  # either scrapy.Spider or SrawlSpider
             self.process_column(response, 2, 'TangibleEquity')
         if indicator in ['revenue',
                          'ebitda',
+                         'gross-profit',
                          'net-income',
                          'shares-outstanding',
                          'operating-income',
@@ -126,8 +125,3 @@ class StockCrawler(scrapy.Spider):  # either scrapy.Spider or SrawlSpider
                          'total-share-holder-equity',
                          'cash-on-hand']:
             self.process_general(response, indicator)
-
-    def initializeDictionary(self):
-        return {'Ticker': {},
-                'Revenue': []
-                }
