@@ -1,10 +1,12 @@
+import json
+
 import scrapy
 from scrapy.selector import Selector
-from scrapy.linkextractors import LinkExtractor
-from scrapy.spiders import CrawlSpider, Rule
+
+data2 = []
 
 
-class Myspider2Spider(scrapy.Spider):  # either scrapy.Spider or SrawlSpider
+class StockCrawler(scrapy.Spider):  # either scrapy.Spider or SrawlSpider
 
     name = 'mySpider2'
 
@@ -38,22 +40,18 @@ class Myspider2Spider(scrapy.Spider):  # either scrapy.Spider or SrawlSpider
 
     def process_general(self, response, indicator):
         selector = Selector(text=response.body)
-        out = response.xpath('//*[@id="style-1"]/div[2]/table/tbody')
+        # init dict
+        debate_dict = self.initializeDictionary()
+        out = response.xpath('//*[@id="style-1"]/div[1]/table/tbody')
         for row in out.css('tr'):
-            r = []
-            for td in row.css('td'):
-                val = ''.join(td.xpath('.//text()').extract())
-                if val == '':
-                    val = '?'
-                r.append(val)
-            r.insert(0, (response.url).rsplit('/', 3)[-3])
-            r.insert(0, (response.url).rsplit('/', 3)[-1])
-            r[-1] = r[-1].replace('$', '')
-            r[-1] = r[-1].replace(',', '')
-            r = ','.join(r)
-            r += "\n"
-            with open('dump.txt', 'a') as f:
-                f.writelines(r)
+            year = row.xpath('td[1]/text()').get()
+            amount = row.xpath('td[2]/text()').get()
+            debate_dict['revenue'].append({
+                'year': year,
+                'amount': amount,
+            })
+            with open('data.json', 'w') as f:
+                json.dump(debate_dict, f)
 
     def process_column(self, response, col_id, indicator):
         selector = Selector(text=response.body)
@@ -78,6 +76,8 @@ class Myspider2Spider(scrapy.Spider):  # either scrapy.Spider or SrawlSpider
                 f.writelines(r)
 
     def parse(self, response):
+        # initialize dictionary
+
         print(response.url)
         indicator = (response.url).rsplit('/', 3)[-1]
         if indicator == 'pe-ratio':
@@ -124,3 +124,9 @@ class Myspider2Spider(scrapy.Spider):  # either scrapy.Spider or SrawlSpider
                          'total-share-holder-equity',
                          'cash-on-hand']:
             self.process_general(response, indicator)
+
+    def initializeDictionary(self):
+        return {'topic': {},
+                'category': {},
+                'revenue': []
+                }
