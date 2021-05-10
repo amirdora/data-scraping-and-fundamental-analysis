@@ -42,11 +42,13 @@ class StockCrawler(scrapy.Spider):  # either scrapy.Spider or SrawlSpider
         selector = Selector(text=response.body)
         # init dict
         debate_dict = self.initializeDictionary()
+        ticker = (response.url).rsplit('/', 3)[-3]
         out = response.xpath('//*[@id="style-1"]/div[1]/table/tbody')
         for row in out.css('tr'):
             year = row.xpath('td[1]/text()').get()
             amount = row.xpath('td[2]/text()').get()
-            debate_dict['revenue'].append({
+            debate_dict['Ticker'] = ticker
+            debate_dict["Revenue"].append({
                 'year': year,
                 'amount': amount,
             })
@@ -126,7 +128,6 @@ class StockCrawler(scrapy.Spider):  # either scrapy.Spider or SrawlSpider
             self.process_general(response, indicator)
 
     def initializeDictionary(self):
-        return {'topic': {},
-                'category': {},
-                'revenue': []
+        return {'Ticker': {},
+                'Revenue': []
                 }
