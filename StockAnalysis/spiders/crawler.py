@@ -117,6 +117,8 @@ class Myspider2Spider(scrapy.Spider):  # either scrapy.Spider or SrawlSpider
                          'ebitda',
                          'gross-profit',
                          'net-income',
+                         'selling-general-administrative-expenses',
+                         'research-development-expenses',
                          'shares-outstanding',
                          'operating-income',
                          'total-assets',
