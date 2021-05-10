@@ -15,10 +15,9 @@ def removeOldFileIfExists():
         os.remove(fileName)
 
 
-def generateLinks(ticker):
+def generateLinks(ticker, company):
     global pages, mainUrl
     pages = crawler.pages
-    ticker_arg = ticker
-    mainUrl = 'https://www.macrotrends.net/stocks/charts/%s/alphabet/' % ticker_arg
+    mainUrl = 'https://www.macrotrends.net/stocks/charts/%s/%s/' % (ticker, company)
     removeOldFileIfExists()
     generateLinksInTxt()

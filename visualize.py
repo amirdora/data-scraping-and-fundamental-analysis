@@ -3,10 +3,12 @@ import pandas as pd
 from matplotlib import pyplot as plt
 import linkGenerator
 
+ticker = 'BABA'
+company = 'Alibaba'
+
 
 def setTickerAndGenerateLinks():
-    ticker = 'GOOG'
-    linkGenerator.generateLinks(ticker)
+    linkGenerator.generateLinks(ticker, company)
 
 
 def calculatePercentage(obtained, total):
@@ -61,6 +63,7 @@ grossProfit = []
 year = []
 sga_expenses = []
 research_expenses = []
+total_depreciation = []
 
 for indicator, indicator_df in indicators:
     if indicator == 'net-income':
@@ -74,25 +77,31 @@ for indicator, indicator_df in indicators:
         sga_expenses = indicator_df['Amount'].values[0:10]
     if indicator == 'research-development-expenses':
         research_expenses = indicator_df['Amount'].values[0:10]
-
+    if indicator == 'total-depreciation-amortization-cash-flow':
+        total_depreciation = indicator_df['Amount'].values[0:10]
 # net-income
 netEarningPercent = calculatePercentage(obtained=netEarning, total=revenue)
-showPercentChart(year=year, percentage=netEarningPercent, title='Net Earning in Percent',
+showPercentChart(year=year, percentage=netEarningPercent, title=ticker + ' - Net Earning in Percent',
                  description="Note: If a company is showing net earnings greater than 20% on total revenues, "
                              "it is probably benefiting from a long term competitive advantage.")
 # gross-profit
 grossProfitMargin = calculatePercentage(obtained=grossProfit, total=revenue)
-showPercentChart(year=year, percentage=grossProfitMargin, title='Gross Profit Margin',
+showPercentChart(year=year, percentage=grossProfitMargin, title=ticker + ' - Gross Profit Margin',
                  description="Note: Firms with excellent long term economics tend to have consistently higher margins."
                              " Greater than 40% = Durable competitive advantage. Less than 20% = no sustainable competitive advantage")
 
 # selling-general-administrative-expenses
 SGA_Percent_OfProfitMargin = calculatePercentage(obtained=sga_expenses, total=grossProfit)
-showPercentChart(year=year, percentage=SGA_Percent_OfProfitMargin, title='SG&A Expenses in percent',
+showPercentChart(year=year, percentage=SGA_Percent_OfProfitMargin, title=ticker + ' - SG&A Expenses in percent',
                  description="Note: Companies with no durable competitive advantage show wild variation in "
                              "SG&A as % of gross profit. Less than 30% is fantastic. Nearing 100% is in highly competitive industrye")
 
 # research-development-expenses
 research_expenses_OfProfitMargin = calculatePercentage(obtained=research_expenses, total=grossProfit)
-showPercentChart(year=year, percentage=research_expenses_OfProfitMargin, title='R&D Expenses in percent',
+showPercentChart(year=year, percentage=research_expenses_OfProfitMargin, title=ticker + ' - R&D Expenses in percent',
                  description="High R&D usually threatens the competitive advantage. Buffett believes that companies that spend huge sums of money on R&D may develop an advantage, however, that advantage is bound to erode.")
+
+# total-depreciation-amortization-cash-flow
+depreciation_cost_inPercent = calculatePercentage(obtained=total_depreciation, total=grossProfit)
+showPercentChart(year=year, percentage=depreciation_cost_inPercent, title=ticker + ' - Depreciation cost',
+                 description="Companies with durable competitive advantages tend to have lower depreciation costs as a % of gross profit. Coca Cola has consistent 6% depreciation which is considered good.")
