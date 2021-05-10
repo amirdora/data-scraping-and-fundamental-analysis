@@ -1,9 +1,12 @@
-import json
 import os
-
-import numpy
 import pandas as pd
 from matplotlib import pyplot as plt
+import linkGenerator
+
+
+def setTickerAndGenerateLinks():
+    ticker = 'GOOG'
+    linkGenerator.generateLinks(ticker)
 
 
 def calculatePercentage(obtained, total):
@@ -36,9 +39,15 @@ def showPercentChart(year, percentage, title, description):
 
 
 def startingCrawlerClass():
-    os.remove("dump.txt")
-    os.system("scrapy crawl mySpider2")
+    # remove old file if exists
+    fileName = "dump.txt"
+    if os.path.exists(fileName):
+        os.remove(fileName)
+    os.system("scrapy crawl stockSpider")
 
+
+# generating links
+setTickerAndGenerateLinks()
 
 # starting crawler
 startingCrawlerClass()

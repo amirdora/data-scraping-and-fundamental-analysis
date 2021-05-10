@@ -1,37 +1,18 @@
 import scrapy
 from scrapy.selector import Selector
-from scrapy.linkextractors import LinkExtractor
-from scrapy.spiders import CrawlSpider, Rule
+
+pages = ['revenue',
+         'gross-profit',
+         'net-income',
+         'selling-general-administrative-expenses',
+         'research-development-expenses']
 
 
 class Myspider2Spider(scrapy.Spider):  # either scrapy.Spider or SrawlSpider
 
-    name = 'mySpider2'
+    name = 'stockSpider'
 
     allowed_domains = ['macrotrends.net']
-    # start_urls = ['https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/pe-ratio', 
-    # 'https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/price-sales',
-    # 'https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/price-book',
-    # 'https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/price-fcf']
-
-    # start_urls = ['https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/revenue',
-    # 'https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/ebitda',
-    # 'https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/net-income',
-    # 'https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/shares-outstanding']
-
-    # start_urls = ['https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/total-assets',
-    # 'https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/total-liabilities',
-    # 'https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/long-term-debt',
-    # 'https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/total-share-holder-equity',
-    # 'https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/cash-on-hand']
-
-    # start_urls = ['https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/current-ratio',
-    #     'https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/quick-ratio',
-    #     'https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/debt-equity-ratio',
-    #     'https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/roe',
-    #     'https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/roa',
-    #     'https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/roi',
-    #     'https://www.macrotrends.net/stocks/charts/MSFT/miscrosoft/return-on-tangible-equity']
 
     with open('/Users/ad/PycharmProjects/StockAnalysis/link.txt', 'r') as f:
         start_urls = f.readlines()
@@ -113,17 +94,6 @@ class Myspider2Spider(scrapy.Spider):  # either scrapy.Spider or SrawlSpider
         if indicator == 'return-on-tangible-equity':
             self.process_column(response, 3, 'RoTangibleEquity')
             self.process_column(response, 2, 'TangibleEquity')
-        if indicator in ['revenue',
-                         'ebitda',
-                         'gross-profit',
-                         'net-income',
-                         'selling-general-administrative-expenses',
-                         'research-development-expenses',
-                         'shares-outstanding',
-                         'operating-income',
-                         'total-assets',
-                         'total-liabilities',
-                         'long-term-debt',
-                         'total-share-holder-equity',
-                         'cash-on-hand']:
+
+        if indicator in pages:
             self.process_general(response, indicator)
