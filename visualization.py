@@ -3,8 +3,8 @@ import pandas as pd
 from matplotlib import pyplot as plt
 import linkGenerator
 
-ticker = 'BABA'
-company = 'Alibaba'
+ticker = 'AAPL'
+company = 'apple'
 
 
 def setTickerAndGenerateLinks():
