@@ -1,5 +1,0 @@
-https://www.macrotrends.net/stocks/charts/GOOG/alphabet/revenue
-https://www.macrotrends.net/stocks/charts/GOOG/alphabet/net-income
-https://www.macrotrends.net/stocks/charts/GOOG/alphabet/gross-profit
-https://www.macrotrends.net/stocks/charts/GOOG/alphabet/selling-general-administrative-expenses
-https://www.macrotrends.net/stocks/charts/GOOG/alphabet/research-development-expenses
