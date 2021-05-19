@@ -71,7 +71,7 @@ app.layout = html.Div([
     dcc.Graph(id='percent_graph', figure={}),
     html.P(id='note_text', children=[], style={'text-align': 'center', 'color': 'orange'}),
 
-])
+], style={"margin-left": "5%", "margin-right": "5%"})
 
 
 # ------------------------------------------------------------------------------
