@@ -9,8 +9,8 @@ from dash.dependencies import Input, Output
 from matplotlib import pyplot as plt
 import linkGenerator
 
-ticker = 'AAPL'
-company = 'apple'
+ticker = 'TSLA'
+company = 'Tesla'
 
 
 def setTickerAndGenerateLinks():
@@ -22,18 +22,6 @@ def calculatePercentage(obtained, total):
     for i in range(0, len(obtained)):
         amountInPercent.append(int((obtained[i] / total[i]) * 100))
     return amountInPercent
-
-
-def showPercentChart(year, percentage, title, description):
-    plt.plot(year, percentage)
-    plt.title(title, fontsize=20)
-    plt.xlabel('Year', fontsize=12)
-    plt.ylabel(title, fontsize=12)
-    plt.ylim([0, 100])
-    # caption
-    plt.figtext(0.5, 0.02, description, wrap=True, horizontalalignment='center', fontsize=12)
-    plt.tight_layout(pad=4)
-    plt.show()
 
 
 def startingCrawlerClass():
@@ -52,7 +40,7 @@ app = dash.Dash(__name__)
 setTickerAndGenerateLinks()
 
 # starting crawler
-# startingCrawlerClass()
+startingCrawlerClass()
 
 # ---------- Import and clean data (importing csv into pandas)
 df = pd.read_csv("dump.txt", sep=',', names=["Indicator", "Ticker", "Year", "Amount"])
@@ -65,10 +53,7 @@ app.layout = html.Div([
     html.H1("Interpretation of Financial Statements", style={'text-align': 'center'}),
     html.H1("10 year data analysis", style={'text-align': 'center'}),
 
-    # html.Div(dcc.Input(id='input-on-submit', type='text')),
-    # html.Button('Submit', id='submit-val', n_clicks=0),
-
-    dcc.Dropdown(id="slct_year",
+    dcc.Dropdown(id="selection_type",
                  options=[
                      {"label": "Net Earning in Percent", "value": "net-income"},
                      {"label": "Gross Profit Margin", "value": "gross-profit"},
@@ -81,8 +66,9 @@ app.layout = html.Div([
                  ),
 
     html.Br(),
-
-    dcc.Graph(id='my_bee_map', figure={}),
+    html.Div(id='company_ticker', children=[]),
+    html.Div(id='company_name', children=[]),
+    dcc.Graph(id='percent_graph', figure={}),
     html.P(id='note_text', children=[], style={'text-align': 'center', 'color': 'orange'}),
 
 ])
@@ -92,10 +78,12 @@ app.layout = html.Div([
 # Connect the Plotly graphs with Dash Components
 @app.callback(
     [Output(component_id='note_text', component_property='children'),
-     Output(component_id='my_bee_map', component_property='figure')],
-    [Input(component_id='slct_year', component_property='value')]
+     Output(component_id='percent_graph', component_property='figure')],
+    [Input(component_id='selection_type', component_property='value'),
+     Input(component_id='company_ticker', component_property='children'),
+     Input(component_id='company_name', component_property='children')]
 )
-def update_graph(option_slctd):
+def update_graph(option_slctd, companyTicker, companyName):
     global noteText
     print(option_slctd)
     print(type(option_slctd))
@@ -105,14 +93,14 @@ def update_graph(option_slctd):
     # net-income
     if option_slctd == "net-income":
         netEarningPercent = calculatePercentage(obtained=netEarning, total=revenue)
-        fig = generateNetEarningChart("Net Earning in Percent", netEarningPercent, year)
+        fig = generatePercentGraph("Net Earning in Percent", netEarningPercent, year)
         noteText = "Warren Buffett's Advice: If a company is showing net earnings greater than 20% on total revenues, " \
                    "it is probably benefiting from a long term competitive advantage."
 
     # gross-profit
     if option_slctd == "gross-profit":
         grossProfitMargin = calculatePercentage(obtained=grossProfit, total=revenue)
-        fig = generateNetEarningChart("Gross Profit Margin", grossProfitMargin, year)
+        fig = generatePercentGraph("Gross Profit Margin", grossProfitMargin, year)
         noteText = "Warren Buffett's Advice: Firms with excellent long term economics tend to have consistently higher margins. " \
                    "Greater than 40% = Durable competitive advantage. Less than 20% = no sustainable competitive " \
                    "advantage "
@@ -120,7 +108,7 @@ def update_graph(option_slctd):
     # selling-general-administrative-expenses
     if option_slctd == "selling-general-administrative-expenses":
         SGA_Percent_OfProfitMargin = calculatePercentage(obtained=sga_expenses, total=grossProfit)
-        fig = generateNetEarningChart("SG&A Expenses in percent", SGA_Percent_OfProfitMargin, year)
+        fig = generatePercentGraph("SG&A Expenses in percent", SGA_Percent_OfProfitMargin, year)
         noteText = "Warren Buffett's Advice: Companies with no durable competitive advantage show wild variation in " \
                    "SG&A as % of gross profit. Less than 30% is fantastic. Nearing 100% is in highly competitive " \
                    "industry "
@@ -128,7 +116,7 @@ def update_graph(option_slctd):
     # research-development-expenses
     if option_slctd == "research-development-expenses":
         research_expenses_OfProfitMargin = calculatePercentage(obtained=research_expenses, total=grossProfit)
-        fig = generateNetEarningChart("R&D Expenses in percent", research_expenses_OfProfitMargin, year)
+        fig = generatePercentGraph("R&D Expenses in percent", research_expenses_OfProfitMargin, year)
         noteText = "Warren Buffett's Advice: High R&D usually threatens the competitive advantage. Buffett believes that companies that " \
                    "spend huge sums of money on R&D may develop an advantage, however, that advantage is bound to " \
                    "erode. "
@@ -136,7 +124,7 @@ def update_graph(option_slctd):
     # total-depreciation-amortization-cash-flow
     if option_slctd == "total-depreciation-amortization-cash-flow":
         depreciation_cost_inPercent = calculatePercentage(obtained=total_depreciation, total=grossProfit)
-        fig = generateNetEarningChart("Depreciation cost", depreciation_cost_inPercent, year)
+        fig = generatePercentGraph("Depreciation cost", depreciation_cost_inPercent, year)
         noteText = "Warren Buffett's Advice: Companies with durable competitive advantages tend to have lower depreciation costs as a % " \
                    "of gross profit. Coca Cola has consistent 6% depreciation which is considered good. "
 
@@ -168,14 +156,16 @@ def parseDataFrame():
     return grossProfit, netEarning, research_expenses, revenue, sga_expenses, total_depreciation, year
 
 
-def generateNetEarningChart(title, netEarningPercent, year):
+def generatePercentGraph(title, percentRange, year):
+    yLowestRange = lambda minValue: minValue if minValue < 0 else 0
+
     global fig
-    fig = px.line(x=year, y=netEarningPercent)
+    fig = px.line(x=year, y=percentRange)
     fig.update_layout(
         xaxis_title="Year",
         yaxis_title=title,
-        yaxis_range=[0, 100],
-        title_text=title,
+        yaxis_range=[yLowestRange(min(percentRange)), 100],
+        title_text=company + " - " + title,
         title_xanchor="center",
         title_font=dict(size=24),
         title_x=0.5,
