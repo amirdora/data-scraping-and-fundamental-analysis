@@ -66,8 +66,6 @@ app.layout = html.Div([
                  ),
 
     html.Br(),
-    html.Div(id='company_ticker', children=[]),
-    html.Div(id='company_name', children=[]),
     dcc.Graph(id='percent_graph', figure={}),
     html.P(id='note_text', children=[], style={'text-align': 'center', 'color': 'orange'}),
 
@@ -79,11 +77,9 @@ app.layout = html.Div([
 @app.callback(
     [Output(component_id='note_text', component_property='children'),
      Output(component_id='percent_graph', component_property='figure')],
-    [Input(component_id='selection_type', component_property='value'),
-     Input(component_id='company_ticker', component_property='children'),
-     Input(component_id='company_name', component_property='children')]
+    [Input(component_id='selection_type', component_property='value')]
 )
-def update_graph(option_slctd, companyTicker, companyName):
+def update_graph(option_slctd):
     global noteText
     print(option_slctd)
     print(type(option_slctd))
