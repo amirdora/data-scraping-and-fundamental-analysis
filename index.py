@@ -5,7 +5,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 import linkGenerator
-from app import app
+from start import app
 from apps import dash
 
 app.layout = html.Div([
