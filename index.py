@@ -1,9 +1,9 @@
 import os
+import sys
 
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
-
 import linkGenerator
 from app import app
 from apps import dash
@@ -18,6 +18,8 @@ app.layout = html.Div([
                        dcc.Input(id='input-2-state', type='text', placeholder="Enter Company Name", value=''),
                        dcc.Link(' Get Analytics ', href='/apps/dash')]),
     html.Div(id='display-page'),
+    html.Div([html.Footer('Copyright © 2021 Amir Dora. - All Rights Reserved.')],
+             style={"position": "absolute", "bottom": "0"}),
 
 ], style={"margin-left": "5%", "margin-right": "5%"})
 

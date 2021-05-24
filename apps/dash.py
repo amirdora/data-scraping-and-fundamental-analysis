@@ -22,11 +22,18 @@ layout = html.Div([
                  ),
 
     html.Br(),
-    html.Div(id='company_ticker', children=[]),
-    html.Div(id='company_name', children=[]),
-    dcc.Graph(id='percent_graph', figure={}),
-    html.P(id='note_text', children=[], style={'text-align': 'center', 'color': 'orange'}),
 
+    # two columns for graph and text
+
+    html.Div(
+        [
+            html.Div([dcc.Graph(id='percent_graph')], style={'width': '70%', 'min-height': '100%', 'float': 'left'}),
+            html.P(id='note_text',
+                   style={'text-align': 'center', 'min-height': '100%', 'color': 'orange', 'width': '30%',
+                          'float': 'left', 'line-height': '35px', 'margin': 'auto'}),
+        ],
+        style={'display': 'flex'}
+    ),
 ])
 
 
