@@ -1,12 +1,13 @@
 import os
 import sys
 
+import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 import linkGenerator
+from apps import dashApp
 from start import app
-from apps import dash
 
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
@@ -16,7 +17,7 @@ app.layout = html.Div([
     html.Div(id='input-container',
              children=[dcc.Input(id='input-1-state', type='text', placeholder="Enter Company Ticker", value=''),
                        dcc.Input(id='input-2-state', type='text', placeholder="Enter Company Name", value=''),
-                       dcc.Link(' Get Analytics ', href='/apps/dash')]),
+                       dcc.Link(' Get Analytics ', href='/apps/dashApp')]),
     html.Div(id='display-page'),
     html.Div([html.Footer('Copyright © 2021 Amir Dora. - All Rights Reserved.')],
              style={"position": "absolute", "bottom": "0"}),
@@ -30,7 +31,7 @@ app.layout = html.Div([
               Input(component_id='input-1-state', component_property='value'),
               Input(component_id='input-2-state', component_property='value'))
 def display_page(pathname, ticker, company):
-    if pathname == '/apps/dash':
+    if pathname == '/apps/dashApp':
 
         # generate links
         linkGenerator.generateLinks(ticker, company)
@@ -38,7 +39,7 @@ def display_page(pathname, ticker, company):
         # starting crawler
         startingCrawlerClass()
 
-        return dash.layout, {'display': 'none'}
+        return dashApp.layout, {'display': 'none'}
     else:
         return '', {'display': 'block'}
 
