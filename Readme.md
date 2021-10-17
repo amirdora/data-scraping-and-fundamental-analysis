@@ -3,7 +3,7 @@
 ![Warren Buffett and the Interpretation of Financial Statements](https://github.com/amirdora/data-scraping-and-fundamental-analysis/raw/master/images/Intrepretation_of_financial_statements_amirdora_0.png)
 ![Warren Buffett and the Interpretation of Financial Statements](https://github.com/amirdora/data-scraping-and-fundamental-analysis/raw/master/images/interpretation%20of%20financial%20statements%202-%20amirdora%20.png)
 ![Warren Buffett and the Interpretation of Financial Statements](https://github.com/amirdora/data-scraping-and-fundamental-analysis/raw/master/images/interpretation%20of%20financial%20statements%201%20-%20amirdora.png)
-This project is analytical dashApp web applications that has a built-in crawler which mines data financial data from <a href="https://www.macrotrends.net/stocks/charts/%s/%s/"> MacroTrends </a> website and data is analyzed using financial statements tickers of the company to create visualization. This app is inspired by the book "Warren Buffett and the Interpretation of Financial Statements", quotes are taken from the book.
+This project is analytical dash web application that has a built-in crawler which mines data financial data from <a href="https://www.macrotrends.net/stocks/charts/%s/%s/"> MacroTrends </a> website and data is analyzed using financial statements tickers of the company to create visualization. This app is inspired by the book "Warren Buffett and the Interpretation of Financial Statements", quotes are taken from the book.
 
 ## How to run project
 
