@@ -15,9 +15,10 @@ To get a local copy up and running follow these simple example steps.
 ### Installation
 
 1. Clone the repo
-2. Install necessary libraries used in the applicaiton
-3. Simply run index.py python class
-3. Once application is running, simply enter company name and ticker in the search box. Copy stock ticker: e.g "TSLA", Company: e.g "Tesla" from
+2. Install python
+3. Install requirements 'pip install -r .\requirements.txt'
+4. Simply run index.py python class
+5. Once application is running, simply enter company name and ticker in the search box. Copy stock ticker: e.g "TSLA", Company: e.g "Tesla" from
  [https://www.macrotrends.net/stocks/](https://www.macrotrends.net/stocks/)
 
 
