@@ -1,1 +1,6 @@
 /venv
+venv
+run.sh
+__pycache__
+link.txt
+dump.txt

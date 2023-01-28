@@ -15,7 +15,7 @@ class StockCrawler(scrapy.Spider):  # either scrapy.Spider or SrawlSpider
 
     allowed_domains = ['macrotrends.net']
 
-    with open('/Users/ad/PycharmProjects/StockAnalysis/link.txt', 'r') as f:
+    with open('/opt/stockAnalysis/data-scraping-and-fundamental-analysis/link.txt', 'r') as f:
         start_urls = f.readlines()
 
     def process_general(self, response, col_id, indicator):
@@ -27,7 +27,7 @@ class StockCrawler(scrapy.Spider):  # either scrapy.Spider or SrawlSpider
             for td in row.css('td'):
                 val = ''.join(td.xpath('.//text()').extract())
                 self.logger.info("StockCrawler: val: %s ", val)
-                if val == '' or val is '$':
+                if val == '' or val == '$':
                     val = '0'
                 r.append(val)
             r.insert(0, (response.url).rsplit('/', 3)[-3])
